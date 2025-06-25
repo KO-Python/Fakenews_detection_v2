@@ -20,10 +20,10 @@ model, tokenizer = load_model()
 # Streamlit UI 구성
 st.title("허위정보 탐지 AI 서비스")
 
-# 초기화 버튼
-if st.button("초기화"):
-    st.session_state.clear()
-    st.experimental_rerun()
+# 👉 새 접속 사용자에게 session_state 초기화 (자동)
+if 'first_run' not in st.session_state:
+    st.session_state['search_count'] = 0
+    st.session_state['first_run'] = False
 
 # 참여자 기본 정보 입력
 st.subheader("1️⃣ 참여자 기본정보를 입력해 주세요")
@@ -36,9 +36,6 @@ political_ideology = st.slider("정치 이념 성향 (1 = 매우 진보적, 7 = 
 party_support = st.selectbox("현재 지지하는 정당", ["더불어민주당", "국민의힘", "정의당", "기타 정당", "지지 정당 없음"])
 
 # 검색 횟수 카운트 (1~5개 제한)
-if 'search_count' not in st.session_state:
-    st.session_state['search_count'] = 0
-
 st.write(f"현재 검색 횟수: {st.session_state['search_count']} / 5 (최소 1개 ~ 최대 5개까지 검색 가능)")
 
 # 기사 입력
@@ -104,3 +101,4 @@ if st.button("허위정보 탐색하기"):
 # 검색 완료 안내
 if st.session_state['search_count'] == 5:
     st.success("5개 입력 완료! 설문을 종료하셔도 됩니다.")
+
