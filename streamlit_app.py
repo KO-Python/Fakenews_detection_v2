@@ -6,7 +6,7 @@ import pandas as pd
 import os
 from datetime import datetime
 
-# 모델 로드 (HuggingFace Hub)
+# 모델 로드 (캐시 적용)
 @st.cache_resource
 def load_model():
     model = BertForSequenceClassification.from_pretrained("kbs0035/my_fakenews_model")
@@ -19,6 +19,11 @@ model, tokenizer = load_model()
 
 # Streamlit UI 구성
 st.title("허위정보 탐지 AI 서비스")
+
+# 초기화 버튼
+if st.button("초기화"):
+    st.session_state.clear()
+    st.experimental_rerun()
 
 # 참여자 기본 정보 입력
 st.subheader("1️⃣ 참여자 기본정보를 입력해 주세요")
@@ -61,10 +66,10 @@ if st.button("허위정보 탐색하기"):
 
         # 예측 결과 표시
         if prediction == 1:
-            st.error(f"❌ 허위 정보로 판정되었습니다. (신뢰도: {confidence:.2f}%)")
+            st.error(f"❌ 허위 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "허위"
         else:
-            st.success(f"✅ 진실된 정보로 판정되었습니다. (신뢰도: {confidence:.2f}%)")
+            st.success(f"✅ 진실된 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "진실"
 
         # 검색 로그 저장
