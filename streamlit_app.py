@@ -8,8 +8,8 @@ import os
 from datetime import datetime
 import dropbox
 
-# ✅ 드롭박스 Access Token (여기에 선생님 토큰 그대로 넣었습니다)
-DROPBOX_ACCESS_TOKEN = 'sl.u.AF38u5HBklV3lsXhbdKbZPIyJt1Ey1ti42E7UlJbdoGs7BYciPgEshtuYzot33qMHiDWGV9VMoG9kktOu-DfrfKmAIkQki_GxHmGo6nyE6Zl_bz4UwPuhw-6NREPBc__ucCna7EPKFqTEyvbBB4JS-mri66hV0ecYHpYrz1fFPdwCcuC_8y5rTqFRlXEmdgZOoO-OfZ-GMpFBsQ5l5-NZSW3_LfQnOF24HyYRKDvlblwBNBegQCqrBrCwcS63hJJgWUTpQNms_rgOT4g2hOBykm0iMQAbjWiDHteu0gsr_2yQHLkqgV7MSicXkkhp2sM391weI1py4Hm3CKDUOhmx7lo3kC2f0Okw8qG_1PdisE2203xjWpHkcr437lmsjSo2Z8u330fVhewgHr71b-2L4fl8V3nbUeMJN_z15vUw9YcLz88awrkiWIILZLioZjTRknxopdXNJsJRoY2n-VOUtfwteFq_QO-zX_Cm_8IAh1YqDBc4mkpxcyTcoNA4a1XaACyOwH58z6ws5_JFhYsIpOs7CgaXY_02gTKFU15oBBrCbVHUFGFtUKe5m-oqsC9qxFEA2u0NJcsOtvRizyCj-Ip_k3xqX8_-Zkudr3GuDj9673mLVP3ftWK-cIJAk9C6a0F-k9cIoZBkM9gYYktYH4fvy4e76GXtGEHfd_lyhUmxVg4-jLQkbU-ebBL2j2gK7PJDsLJ2wz4tdhRcDBDhNXCftgg-IjG3lWLafH8R-_pVeqbACt7Dl98W0lq35CKJOc3KH0SBc6P6CxAzSvhhdl7tc5viDEkydY9GKMEct9Dc0j53vTOS4Moj8e6de_bH0teEMDD2HZYp3xjqKhFgahTKpMaxoAJ63L0nVNcENDVtFL1XPyE9MhGmgqdV6WoXqlDTfet7NtJl9ETssqoYdTqISosAMZEEsv0-vahUm-IIbBWUVEP5YZOIUEH1IEjZWsKeU8tRE3mQ86Z9Kga-C00FtGMNm87QNnFLjbvg0n2k3J21vO86moxgIgRlt-l5ZnEB-_WvTzxJM6Mdzt3GspN5tphtCP3iLVf_7Q1zLhPOR-RS4ekdraxxGEZcbaop-AAX7dBk5ebmHM4fgx8SUpwiby9bTHQ1ug0ZE_HegnL0o8hIce-Fh3F2w0FXr7UpV6LIOFtqPidv-wrs9QosEFTeWQztMXimqGHZjWX913QMbJxD6aOcB5MB9WroX4zvCAaiLA8rmmxpfKj-UykU7qDfof9fDc4iULz8HZiCKzIBiba_H9-Tw_wRhXIabwmRhY'
+# ✅ 드롭박스 Access Token
+DROPBOX_ACCESS_TOKEN = '여기에 넣으세요'
 
 # ✅ 드롭박스 클라이언트 연결
 dbx = dropbox.Dropbox(DROPBOX_ACCESS_TOKEN)
@@ -28,7 +28,7 @@ model, tokenizer = load_model()
 # ✅ Streamlit UI 구성
 st.title("허위정보 탐지 AI 서비스")
 
-# 초기화 버튼
+# ✅ 초기화 버튼
 if st.button("초기화"):
     st.session_state.clear()
     st.experimental_rerun()
@@ -39,7 +39,10 @@ st.subheader("1️⃣ 참여자 기본정보를 입력해 주세요")
 user_id = st.text_input("참여코드 (본인 전화번호 끝 4자리 또는 임의 4자리)")
 gender = st.radio("성별", ["남성", "여성", "기타/응답안함"])
 age = st.number_input("나이 (숫자 입력)", min_value=10, max_value=100, step=1)
-region = st.selectbox("거주지역", ["서울", "수도권(경기/인천)", "충청권", "영남권", "호남권", "강원/제주", "기타"])
+region = st.selectbox(
+    "거주지역", 
+    ["선택하세요", "서울", "수도권(경기/인천)", "충청권", "영남권", "호남권", "강원/제주", "기타"]
+)
 political_ideology = st.slider("정치 이념 성향 (1 = 매우 진보적, 10 = 매우 보수적)", 1, 10, 5)
 party_support = st.selectbox("현재 지지하는 정당", ["더불어민주당", "국민의힘", "정의당", "기타 정당", "지지 정당 없음"])
 
@@ -56,8 +59,8 @@ user_input = st.text_area("기사 입력", height=150)
 # ✅ 버튼 클릭 시 실행
 if st.button("허위정보 탐색하기"):
     # 입력 확인
-    if user_id.strip() == "" or user_input.strip() == "":
-        st.warning("참여코드와 기사 내용을 모두 입력해 주세요.")
+    if user_id.strip() == "" or user_input.strip() == "" or region == "선택하세요":
+        st.warning("참여코드, 거주지역, 기사 내용을 모두 입력해 주세요.")
     elif st.session_state['search_count'] >= 5:
         st.warning("최대 5개까지 입력 가능합니다.")
     else:
@@ -80,7 +83,7 @@ if st.button("허위정보 탐색하기"):
             st.success(f"✅ 진실된 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "진실"
 
-        # 검색 로그 저장
+        # ✅ 검색 로그 저장
         log_entry = {
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'user_id': user_id,
@@ -120,4 +123,5 @@ if st.button("허위정보 탐색하기"):
 # ✅ 검색 완료 안내
 if st.session_state['search_count'] == 5:
     st.success("5개 입력 완료! 설문을 종료하셔도 됩니다.")
+
 
