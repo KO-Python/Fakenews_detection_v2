@@ -6,33 +6,15 @@ import torch
 import pandas as pd
 import os
 from datetime import datetime
-import gspread
-import json
-from oauth2client.service_account import ServiceAccountCredentials
-import gspread_dataframe as gd
+import dropbox
 
-# 구글 시트 ID (고정)
-SHEET_ID = "1oZy6Nkvcice2Xs9mrA6fS0vy0pp5Ay3iSN0Z73KeCVk"
+# ✅ 드롭박스 Access Token (여기에 선생님 토큰 그대로 넣었습니다)
+DROPBOX_ACCESS_TOKEN = 'sl.u.AF38u5HBklV3lsXhbdKbZPIyJt1Ey1ti42E7UlJbdoGs7BYciPgEshtuYzot33qMHiDWGV9VMoG9kktOu-DfrfKmAIkQki_GxHmGo6nyE6Zl_bz4UwPuhw-6NREPBc__ucCna7EPKFqTEyvbBB4JS-mri66hV0ecYHpYrz1fFPdwCcuC_8y5rTqFRlXEmdgZOoO-OfZ-GMpFBsQ5l5-NZSW3_LfQnOF24HyYRKDvlblwBNBegQCqrBrCwcS63hJJgWUTpQNms_rgOT4g2hOBykm0iMQAbjWiDHteu0gsr_2yQHLkqgV7MSicXkkhp2sM391weI1py4Hm3CKDUOhmx7lo3kC2f0Okw8qG_1PdisE2203xjWpHkcr437lmsjSo2Z8u330fVhewgHr71b-2L4fl8V3nbUeMJN_z15vUw9YcLz88awrkiWIILZLioZjTRknxopdXNJsJRoY2n-VOUtfwteFq_QO-zX_Cm_8IAh1YqDBc4mkpxcyTcoNA4a1XaACyOwH58z6ws5_JFhYsIpOs7CgaXY_02gTKFU15oBBrCbVHUFGFtUKe5m-oqsC9qxFEA2u0NJcsOtvRizyCj-Ip_k3xqX8_-Zkudr3GuDj9673mLVP3ftWK-cIJAk9C6a0F-k9cIoZBkM9gYYktYH4fvy4e76GXtGEHfd_lyhUmxVg4-jLQkbU-ebBL2j2gK7PJDsLJ2wz4tdhRcDBDhNXCftgg-IjG3lWLafH8R-_pVeqbACt7Dl98W0lq35CKJOc3KH0SBc6P6CxAzSvhhdl7tc5viDEkydY9GKMEct9Dc0j53vTOS4Moj8e6de_bH0teEMDD2HZYp3xjqKhFgahTKpMaxoAJ63L0nVNcENDVtFL1XPyE9MhGmgqdV6WoXqlDTfet7NtJl9ETssqoYdTqISosAMZEEsv0-vahUm-IIbBWUVEP5YZOIUEH1IEjZWsKeU8tRE3mQ86Z9Kga-C00FtGMNm87QNnFLjbvg0n2k3J21vO86moxgIgRlt-l5ZnEB-_WvTzxJM6Mdzt3GspN5tphtCP3iLVf_7Q1zLhPOR-RS4ekdraxxGEZcbaop-AAX7dBk5ebmHM4fgx8SUpwiby9bTHQ1ug0ZE_HegnL0o8hIce-Fh3F2w0FXr7UpV6LIOFtqPidv-wrs9QosEFTeWQztMXimqGHZjWX913QMbJxD6aOcB5MB9WroX4zvCAaiLA8rmmxpfKj-UykU7qDfof9fDc4iULz8HZiCKzIBiba_H9-Tw_wRhXIabwmRhY'
 
-# 인증
-scope = [
-    "https://spreadsheets.google.com/feeds",
-    "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive.file",
-    "https://www.googleapis.com/auth/drive"
-]
+# ✅ 드롭박스 클라이언트 연결
+dbx = dropbox.Dropbox(DROPBOX_ACCESS_TOKEN)
 
-creds = ServiceAccountCredentials.from_json_keyfile_dict(
-    json.loads(st.secrets["GCP_SERVICE_ACCOUNT_JSON"]),
-    scope
-)
-
-gc = gspread.authorize(creds)
-
-# 구글 시트 접근
-sheet = gc.open_by_key(SHEET_ID).worksheet("Sheet1")
-
-# 모델 로드
+# ✅ 모델 로드 (캐시 적용)
 @st.cache_resource
 def load_model():
     model = BertForSequenceClassification.from_pretrained("kbs0035/my_fakenews_model")
@@ -40,16 +22,18 @@ def load_model():
     model.eval()
     return model, tokenizer
 
+# ✅ 모델 불러오기
 model, tokenizer = load_model()
 
-# UI
+# ✅ Streamlit UI 구성
 st.title("허위정보 탐지 AI 서비스")
 
-# 검색 카운트
-if 'search_count' not in st.session_state:
-    st.session_state['search_count'] = 0
+# 초기화 버튼
+if st.button("초기화"):
+    st.session_state.clear()
+    st.experimental_rerun()
 
-# 참여자 기본 정보
+# ✅ 참여자 기본 정보 입력
 st.subheader("1️⃣ 참여자 기본정보를 입력해 주세요")
 
 user_id = st.text_input("참여코드 (본인 전화번호 끝 4자리 또는 임의 4자리)")
@@ -59,21 +43,28 @@ region = st.selectbox("거주지역", ["서울", "수도권(경기/인천)", "�
 political_ideology = st.slider("정치 이념 성향 (1 = 매우 진보적, 10 = 매우 보수적)", 1, 10, 5)
 party_support = st.selectbox("현재 지지하는 정당", ["더불어민주당", "국민의힘", "정의당", "기타 정당", "지지 정당 없음"])
 
-st.write(f"현재 검색 횟수: {st.session_state['search_count']} / 5 (최소 1개 ~ 최대 5개까지 가능)")
+# ✅ 검색 횟수 카운트 (1~5개 제한)
+if 'search_count' not in st.session_state:
+    st.session_state['search_count'] = 0
 
-# 기사 입력
+st.write(f"현재 검색 횟수: {st.session_state['search_count']} / 5 (최소 1개 ~ 최대 5개까지 검색 가능)")
+
+# ✅ 기사 입력
 st.subheader("2️⃣ 기사 내용을 입력해 주세요")
 user_input = st.text_area("기사 입력", height=150)
 
-# 허위정보 탐색 버튼
+# ✅ 버튼 클릭 시 실행
 if st.button("허위정보 탐색하기"):
+    # 입력 확인
     if user_id.strip() == "" or user_input.strip() == "":
         st.warning("참여코드와 기사 내용을 모두 입력해 주세요.")
     elif st.session_state['search_count'] >= 5:
         st.warning("최대 5개까지 입력 가능합니다.")
     else:
-        # 모델 예측
+        # 입력 텍스트 토크나이징
         inputs = tokenizer(user_input, return_tensors="pt", max_length=128, truncation=True, padding="max_length")
+
+        # 모델 예측
         with torch.no_grad():
             outputs = model(**inputs)
             logits = outputs.logits
@@ -81,6 +72,7 @@ if st.button("허위정보 탐색하기"):
             probabilities = torch.softmax(logits, dim=1)
             confidence = probabilities[0][prediction].item() * 100
 
+        # 예측 결과 표시
         if prediction == 1:
             st.error(f"❌ 허위 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "허위"
@@ -88,7 +80,7 @@ if st.button("허위정보 탐색하기"):
             st.success(f"✅ 진실된 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "진실"
 
-        # 로그 기록
+        # 검색 로그 저장
         log_entry = {
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'user_id': user_id,
@@ -103,17 +95,29 @@ if st.button("허위정보 탐색하기"):
             'confidence': round(confidence, 2)
         }
 
-        # 구글 시트에 기록
-        df_existing = pd.DataFrame(sheet.get_all_records())
-        df_new = pd.concat([df_existing, pd.DataFrame([log_entry])], ignore_index=True)
-        gd.set_with_dataframe(sheet, df_new)
-        st.info("검색 내용이 Google Sheet에 기록되었습니다.")
+        log_file = 'search_log.csv'
 
-        # 카운트 증가
+        if os.path.exists(log_file):
+            df_log = pd.read_csv(log_file)
+            df_log = pd.concat([df_log, pd.DataFrame([log_entry])], ignore_index=True)
+        else:
+            df_log = pd.DataFrame([log_entry])
+
+        df_log.to_csv(log_file, index=False)
+        st.info("검색 내용이 기록되었습니다.")
+
+        # ✅ 드롭박스에 업로드
+        try:
+            with open("search_log.csv", "rb") as f:
+                dbx.files_upload(f.read(), "/FakeNews/search_log.csv", mode=dropbox.files.WriteMode.overwrite)
+            st.success("✅ 드롭박스 저장 완료!")
+        except Exception as e:
+            st.error(f"❌ 드롭박스 저장 실패: {e}")
+
+        # ✅ 검색 카운트 증가
         st.session_state['search_count'] += 1
 
-# 종료 버튼
-if st.session_state['search_count'] >= 1:
-    if st.button("설문 종료하기"):
-        st.success("참여해주셔서 감사합니다.")
+# ✅ 검색 완료 안내
+if st.session_state['search_count'] == 5:
+    st.success("5개 입력 완료! 설문을 종료하셔도 됩니다.")
 
