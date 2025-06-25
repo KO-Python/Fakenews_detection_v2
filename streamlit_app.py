@@ -30,7 +30,7 @@ creds = ServiceAccountCredentials.from_json_keyfile_dict(
     scope
 )
 gc = gspread.authorize(creds)
-sheet = gc.open("FakenewsDetection_Logs").sheet1
+sheet = gc.open("FakenewsDetection_Logs").worksheet("Sheet1")
 
 # ✅ UI 구성
 st.title("허위정보 탐지 AI 서비스")
