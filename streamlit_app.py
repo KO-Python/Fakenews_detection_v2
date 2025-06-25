@@ -6,7 +6,7 @@ import pandas as pd
 import os
 from datetime import datetime
 
-# 모델 로드 (캐시 적용)
+# 모델 로드
 @st.cache_resource
 def load_model():
     model = BertForSequenceClassification.from_pretrained("kbs0035/my_fakenews_model")
@@ -20,22 +20,30 @@ model, tokenizer = load_model()
 # Streamlit UI 구성
 st.title("허위정보 탐지 AI 서비스")
 
-# 👉 새 접속 사용자에게 session_state 초기화 (자동)
-if 'first_run' not in st.session_state:
+# 검색 횟수 카운트 (1~5개 제한)
+if 'search_count' not in st.session_state:
     st.session_state['search_count'] = 0
-    st.session_state['first_run'] = False
 
 # 참여자 기본 정보 입력
 st.subheader("1️⃣ 참여자 기본정보를 입력해 주세요")
 
-user_id = st.text_input("참여코드 (본인 전화번호 끝 4자리 또는 임의 4자리)")
-gender = st.radio("성별", ["남성", "여성", "기타/응답안함"])
-age = st.number_input("나이 (숫자 입력)", min_value=10, max_value=100, step=1)
-region = st.selectbox("거주지역", ["서울", "수도권(경기/인천)", "충청권", "영남권", "호남권", "강원/제주", "기타"])
-political_ideology = st.slider("정치 이념 성향 (1 = 매우 진보적, 7 = 매우 보수적)", 1, 7, 4)
-party_support = st.selectbox("현재 지지하는 정당", ["더불어민주당", "국민의힘", "정의당", "기타 정당", "지지 정당 없음"])
+user_id = st.text_input("참여코드 (본인 전화번호 끝 4자리 또는 임의 4자리)", value="")
 
-# 검색 횟수 카운트 (1~5개 제한)
+gender = st.radio("성별", ["선택 안함", "남성", "여성", "기타/응답안함"], index=0)
+
+age = st.number_input("나이 (숫자 입력)", min_value=10, max_value=100, value=20, step=1)
+
+region = st.selectbox("거주지역", 
+    ["선택 안함", "서울", "수도권(경기/인천)", "충청권", "영남권", "호남권", "강원/제주", "기타"], 
+    index=0)
+
+political_ideology = st.slider("정치 이념 성향 (1 = 매우 진보적, 10 = 매우 보수적)", 1, 10, 5)
+
+party_support = st.selectbox("현재 지지하는 정당", 
+    ["선택 안함", "더불어민주당", "국민의힘", "정의당", "기타 정당", "지지 정당 없음"], 
+    index=0)
+
+# 검색 횟수 표시
 st.write(f"현재 검색 횟수: {st.session_state['search_count']} / 5 (최소 1개 ~ 최대 5개까지 검색 가능)")
 
 # 기사 입력
@@ -101,4 +109,5 @@ if st.button("허위정보 탐색하기"):
 # 검색 완료 안내
 if st.session_state['search_count'] == 5:
     st.success("5개 입력 완료! 설문을 종료하셔도 됩니다.")
+
 
