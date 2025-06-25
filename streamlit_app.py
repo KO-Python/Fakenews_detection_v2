@@ -1,5 +1,4 @@
 
-
 import streamlit as st
 from transformers import BertTokenizer, BertForSequenceClassification
 import torch
@@ -7,10 +6,10 @@ import pandas as pd
 import gspread
 from gspread_dataframe import set_with_dataframe
 from oauth2client.service_account import ServiceAccountCredentials
+import json
 from datetime import datetime
-import os
 
-# ✅ 모델 로드 (캐시 적용)
+# ✅ 모델 로드
 @st.cache_resource
 def load_model():
     model = BertForSequenceClassification.from_pretrained("kbs0035/my_fakenews_model")
@@ -20,11 +19,18 @@ def load_model():
 
 model, tokenizer = load_model()
 
-# ✅ Google Sheets 인증
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('fakenewsdetection-credentials.json', scope)
+# ✅ Google Sheets 인증 (Secrets 사용)
+scope = [
+    'https://spreadsheets.google.com/feeds',
+    'https://www.googleapis.com/auth/drive'
+]
+
+creds = ServiceAccountCredentials.from_json_keyfile_dict(
+    json.loads(st.secrets["GCP_SERVICE_ACCOUNT_JSON"]),
+    scope
+)
 gc = gspread.authorize(creds)
-sheet = gc.open('FakenewsDetection_Logs').sheet1
+sheet = gc.open("FakenewsDetection_Logs").sheet1
 
 # ✅ UI 구성
 st.title("허위정보 탐지 AI 서비스")
@@ -78,24 +84,21 @@ if st.button("허위정보 탐색하기"):
             result_text = "진실"
 
         # ✅ 로그 저장
-        log_entry = {
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'user_id': user_id,
-            'gender': gender,
-            'age': age,
-            'region': region,
-            'political_ideology': political_ideology,
-            'party_support': party_support,
-            'search_count': st.session_state['search_count'] + 1,
-            'user_input': user_input,
-            'result': result_text,
-            'confidence': round(confidence, 2)
-        }
+        log_entry = [
+            datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            user_id,
+            gender,
+            age,
+            region,
+            political_ideology,
+            party_support,
+            st.session_state['search_count'] + 1,
+            user_input,
+            result_text,
+            round(confidence, 2)
+        ]
 
-        df_log = pd.DataFrame([log_entry])
-        existing = pd.DataFrame(sheet.get_all_records())
-        df_new = pd.concat([existing, df_log], ignore_index=True)
-        set_with_dataframe(sheet, df_new)
+        sheet.append_row(log_entry)
 
         st.info("검색 내용이 기록되었습니다.")
         st.session_state['search_count'] += 1
