@@ -106,8 +106,12 @@ if st.button("허위정보 탐색하기"):
         # 검색 카운트 증가
         st.session_state['search_count'] += 1
 
-# 검색 완료 안내
+# 완료 안내 또는 종료하기 버튼
 if st.session_state['search_count'] == 5:
-    st.success("5개 입력 완료! 설문을 종료하셔도 됩니다.")
+    st.success("✅ 5개 입력 완료! 설문을 종료하셔도 됩니다.")
 
+elif st.session_state['search_count'] >= 1:
+    if st.button("설문 종료하기"):
+        st.success("설문을 종료합니다. 참여해 주셔서 감사합니다!")
+        st.session_state['search_count'] = 0  # 초기화
 
