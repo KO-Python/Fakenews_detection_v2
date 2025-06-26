@@ -8,8 +8,8 @@ import os
 from datetime import datetime
 import dropbox
 
-# ✅ 드롭박스 Access Token (선생님이 새로 발급 후 여기에 넣으시면 됩니다)
-DROPBOX_ACCESS_TOKEN = 'sl.u.AF14tlmf5wnusvJnLa7kmT8mhNd5G4ekeFYkve5LYOrR5wHuX256d4MG41tED1a7kTvg097bKBYtWErJrJSK321o83r9raa_ich1aunfPRlS1KWy8k1fbqTTa6AJWmxi3Q2mrcInJMCRuT2TP1ksvQUMzOy2GX_pRhiYnv6FLc_XYl_eUM8jAp-bmfbPj5DsqypKPAcqU8z7zEvg84KWtkyq5wCUbMSdPsgh7qQGEdPxLTMrZby4yaAiS-T6LLPiu4MZAVfhNhoPOqJxzlp1cJOFuPkwiGfOP16M9YzDwYCEvnaxIvBagGDepJJAKvAsvcVQfmtuNKFaxa-XIEr6Cw3QnOIUbQeh7pwlRX_8Qa4VDhJErXz9tQlM_ZIlxRBcqtUXYfwTDSFHg4HgwdyY0qejUwT5T31s-Q3iEDZOZUAU5KymLA6O21kcQHeUNOnFyaWtGhwhOWMT5LZOe3ITJn7WYIZg1VESl4XedEZa_Vl_K2kQilSBSl-YstxuYTez9uiQsZVBMHr6d9-h4ojrSl2cewPG4Ty579C0Yli3ry56wu0nyt8p6FTtyFZP1j7brtS_D70hT3FPseMcuIwuVub8jQaqPdIAVMbzvv1DstvdXV6542hdYrXPSWJmo1GmSrVk6YWmpQDkXqz--LQfAQ8ruAN1_uZCAx2p6ZgP4I3HccCzqs47WqrHjnCYBJ4fFZR4RB-JRDdshkCp1fwS8ZM3Sb-7o3fmla2uyjHn5JUOnU5PqrjaIn0mc1w8QpjS0rspFIXhzCOmHkpD7L4Sn3rQFrDC5bAXWCOOhro3aJd2uKAdCk6j3rDV1eEu6KdMdWxrPBNvzTM5CFcpeBEntsLuIo29XYkO7clX6P4fckitqvw6HZ4Lu_DgSskVOxKAwm2L4Htf_5281k2lrpOTCqj_QyXyDGbPXt36Qy1NM6fWj6YwRekr4fhUcx2x2ZV5q7OBPAukjxbJx3ROV9-BlzOlAH8z9PWpM3AkRRrcKjzIOmyZlpmPahNI73SIpM1NciG96tccWz3GO14bLDLcMmMFmq06DVt5CNnp8fJIkoiqnC_jS8VIu1JI6GIjIfnUh3o8hjcDPT1GaGjQjyTBN_91AI9ANEIAcuGc_3pm-HbZvk87A0yU9lYHS35-E8jtCW1q-6y_ufo4FnNgVKvkuR4aW3rUtqbXnl0MLKbXo9l2NUzYVBGo51GGKCRGnjBI2En1H6nbiQoo2AgKK34xd7MEKh7j-XrfZJMWgz7y-ds7Wsl7D70A68Igow1Yg6mhvhQ'
+# ✅ 드롭박스 Access Token
+DROPBOX_ACCESS_TOKEN = 'sl.u.AF3XnPnBw8o3nWyPHw-Wluvb9gzy5VFeXWgn20xDaFp33HeMYJn63W5DRYOx71c3JSAhxVLbDdFCD8p6n7DPgSXVO8L4F9cqoQqV1ks18sRjEihcI1PnelcMqaCGULClWofoTJ-utzXHCe-ydGq5uH9O_FSeTiVdq07-ivBH70FTCazpLEp3xxKzFe2WqUXpao8oNU5gO-v4oMVezmC2YeAiv81c6aAoPQEMs2WVnq3n6wDGT95Gr7qCUdBvGgUjtk7ifPbafJ_X_ywNu7jK-9i6A2zMHuVp-8WKvpPWlV5j_IG3rAnqj_sky4a6F7D_yAv4cS0y_TMVKo_v1GXZd_7f3oBD2OfBxls0Kne4Pe3JeVRNJP_f59g8_VBXOPnpxJ-ESwwqU_SI_gVuWfUWk6bqLnP_oSNKTd1C__q4xb4wY9GNGkWTU9ci3NXpWli6cixEKxj-6J3JrvCXiJohrkmDsOMWdWN5yFaQj656YOHddE-OePwZi_IVV3tIg7qQgTh4TOfo68k3rKgptXY5MUcWzRyntDXb-Ry7ZewjNCJh6xvNxnYFilL3QpQpTkCrZ9DuXkofs5umnRR9wwv9ZM1kqdGAowyO8joGbtFLXsmCs43U79zBfBlA2bQ45sEb7RqEx7LWttwTKfefdyYjmpQQ__t11JOXQc_N7EbNh7OukEcL0TzO19GTlOBVFrJN2XOUGhqY41i0JSa1chHpfkb6zJQiCPI2qPKb19VNvuSH6VjQX57ZQRfYxi375fXkz-bbdX4FSmZoMjc9S0wIIsENlS5icStdKPV0papHdfapbKQS4fnkjWHAr70OL5z_H4eBsL7yDgsQmu_dfneUkyV_zcTyO8bLo09oGZwVdGfD1v3clR4uNv8bh8W2e98F0bplra6ySfx6CVSaaVjTfgQJD6R9a_y4ZVFMarD3uYpQctYgmrTd_4rtCo6auNnLXopdsq-ULJR8N8Fda1QaBooDrGnhwjyZHsmz9EPfsoR3ZHysiX7SxehYXIT8YQ5klCtP5gHe9M_4eupDjCoUGiqtv2yqpkpksPMuv28FZ75GuD7X0rIagCE_CA4flVML4L-eiT3W78zMfx3xtClrTbE6Ws8IS7YVQE2xRKIg-GR_jqSsPkRRP03bHyg_5x87kUAf8xtblAe28bgEgCUtPkCT3H3leW5iJqjVH5uDFkzwKw195BURkKFcu7bMlVSSprs0yPT15NUOyzt-dCtiy7uiaOdTnVFQYdFkcdli9QYyXGfXcQm2eefJZjUGD-R_EO8'
 
 # ✅ 드롭박스 클라이언트 연결
 dbx = dropbox.Dropbox(DROPBOX_ACCESS_TOKEN)
@@ -28,46 +28,35 @@ model, tokenizer = load_model()
 # ✅ Streamlit UI 구성
 st.title("허위정보 탐지 AI 서비스")
 
-# ✅ 참여자 기본 정보 입력
-st.subheader("참여자 기본정보를 입력해 주세요")
-
-user_id = st.text_input("참여코드 (본인 전화번호 끝 4자리 또는 임의 4자리)")
-
-gender = st.selectbox("성별", ["선택하세요", "남성", "여성", "기타/응답안함"])
-
-age = st.number_input("나이 (숫자 입력)", min_value=10, max_value=100, step=1)
-
-region = st.selectbox(
-    "거주지역",
-    ["선택하세요", "서울", "수도권(경기/인천)", "충청권", "영남권", "호남권", "강원/제주", "기타"]
+st.markdown("### 📢 참여 안내")
+st.info(
+    "- 최근 접한 정보 또는 뉴스 중에서 **특정 정치인 또는 정당에 대해 '진실'이라고 믿는 내용**을 1문장으로 작성해 주세요.
+"
+    "- 예시: ‘○○○이 ○○을 추진했다는 보도는 사실이다.’
+"
+    "- 1개 이상, 최대 3개까지 입력할 수 있습니다.
+"
+    "- 입력이 완료되면 자동 저장됩니다."
 )
 
-political_ideology = st.slider(
-    "정치 이념 성향 (1 = 매우 진보적, 10 = 매우 보수적) → 이동해서 선택해주세요", 1, 10, 5
-)
+user_id = st.text_input("참여코드 (전화번호 끝 4자리 또는 임의 4자리)")
 
-party_support = st.selectbox(
-    "현재 지지하는 정당",
-    ["선택하세요", "더불어민주당", "국민의힘", "정의당", "기타 정당", "지지 정당 없음"]
-)
-
-# ✅ 검색 횟수 카운트 (1~5개 제한)
+# ✅ 검색 횟수 카운트 (1~3개 제한)
 if 'search_count' not in st.session_state:
     st.session_state['search_count'] = 0
 
-st.write(f"현재 검색 횟수: {st.session_state['search_count']} / 5 (최소 1개 ~ 최대 5개까지 검색 가능)")
+st.write(f"현재 입력 횟수: {st.session_state['search_count']} / 3 (최대 3개까지 입력 가능)")
 
 # ✅ 기사 입력
-st.subheader("내용을 입력해 주세요")
-user_input = st.text_area("기사 입력", height=150)
+st.subheader("정보 내용을 입력해 주세요")
+user_input = st.text_area("내용 입력", height=150)
 
 # ✅ 버튼 클릭 시 실행
 if st.button("허위정보 탐색하기"):
-    # 입력 확인
-    if user_id.strip() == "" or gender == "선택하세요" or region == "선택하세요" or party_support == "선택하세요" or user_input.strip() == "":
-        st.warning("⚠️ 참여코드, 성별, 거주지역, 지지정당, 기사 내용을 모두 입력해 주세요.")
-    elif st.session_state['search_count'] >= 5:
-        st.warning("⚠️ 최대 5개까지 입력 가능합니다.")
+    if user_id.strip() == "" or user_input.strip() == "":
+        st.warning("⚠️ 참여코드와 기사 내용을 입력해 주세요.")
+    elif st.session_state['search_count'] >= 3:
+        st.warning("⚠️ 최대 3개까지 입력 가능합니다.")
     else:
         # 입력 텍스트 토크나이징
         inputs = tokenizer(user_input, return_tensors="pt", max_length=128, truncation=True, padding="max_length")
@@ -88,15 +77,10 @@ if st.button("허위정보 탐색하기"):
             st.success(f"✅ 진실된 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "진실"
 
-        # 검색 로그 저장
+        # 로그 저장
         log_entry = {
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'user_id': user_id,
-            'gender': gender,
-            'age': age,
-            'region': region,
-            'political_ideology': political_ideology,
-            'party_support': party_support,
             'search_count': st.session_state['search_count'] + 1,
             'user_input': user_input,
             'result': result_text,
@@ -114,20 +98,20 @@ if st.button("허위정보 탐색하기"):
         df_log.to_csv(log_file, index=False)
         st.info("✅ 검색 내용이 기록되었습니다.")
 
-        # ✅ 드롭박스에 업로드
+        # ✅ 드롭박스 업로드
         try:
             with open("search_log.csv", "rb") as f:
                 dbx.files_upload(f.read(), "/FakeNews/search_log.csv", mode=dropbox.files.WriteMode.overwrite)
-            st.success("✅ 드롭박스 저장 완료!")
+            st.success("✅ 저장 완료!")
         except Exception as e:
-            st.error(f"❌ 드롭박스 저장 실패: {e}")
+            st.error(f"❌ 저장 실패: {e}")
 
         # ✅ 검색 카운트 증가
         st.session_state['search_count'] += 1
 
 # ✅ 검색 완료 안내
-if st.session_state['search_count'] == 5:
-    st.success("🎉 5개 입력 완료! 설문을 종료하셔도 됩니다.")
+if st.session_state['search_count'] == 3:
+    st.success("🎉 3개 입력 완료! 감사합니다.")
 
 
 
