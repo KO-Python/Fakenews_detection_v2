@@ -28,40 +28,39 @@ model, tokenizer = load_model()
 # ✅ Streamlit UI 구성
 st.title("허위정보 탐지 AI 서비스")
 
-st.markdown("### 📢 참여 안내")
+# ✅ 안내 메시지
 st.info(
-    "- 최근 접한 정보 또는 뉴스 중에서 **특정 정치인 또는 정당에 대해 '진실'이라고 믿는 내용**을 1문장으로 작성해 주세요.
+    "참여 안내
 "
-    "- 예시: ‘○○○이 ○○을 추진했다는 보도는 사실이다.’
+    "- 본 서비스는 연구 목적으로 제공됩니다.
 "
-    "- 1개 이상, 최대 3개까지 입력할 수 있습니다.
+    "- 최근 접한 정보 또는 뉴스 중에서 특정 정치인 또는 정당에 대해 '진실'이라고 믿는 내용을 1문장으로 작성해 주세요.
 "
-    "- 입력이 완료되면 자동 저장됩니다."
-)
+    "- 예시: "윤석열 대통령은 청년 일자리 확대를 위해 연 100만 개의 일자리를 창출했다."
+"
+    "- 최대 3개까지 입력 가능하며, 1개만 입력하고 종료해도 됩니다.")
 
+# ✅ 참여코드 입력
 user_id = st.text_input("참여코드 (전화번호 끝 4자리 또는 임의 4자리)")
 
 # ✅ 검색 횟수 카운트 (1~3개 제한)
 if 'search_count' not in st.session_state:
     st.session_state['search_count'] = 0
 
-st.write(f"현재 입력 횟수: {st.session_state['search_count']} / 3 (최대 3개까지 입력 가능)")
+st.write(f"현재 입력 횟수: {st.session_state['search_count']} / 3")
 
 # ✅ 기사 입력
-st.subheader("정보 내용을 입력해 주세요")
 user_input = st.text_area("내용 입력", height=150)
 
 # ✅ 버튼 클릭 시 실행
-if st.button("허위정보 탐색하기"):
+if st.button("탐색하기"):
     if user_id.strip() == "" or user_input.strip() == "":
-        st.warning("⚠️ 참여코드와 기사 내용을 입력해 주세요.")
+        st.warning("참여코드와 내용을 모두 입력해 주세요.")
     elif st.session_state['search_count'] >= 3:
-        st.warning("⚠️ 최대 3개까지 입력 가능합니다.")
+        st.warning("최대 3개까지 입력 가능합니다.")
     else:
-        # 입력 텍스트 토크나이징
         inputs = tokenizer(user_input, return_tensors="pt", max_length=128, truncation=True, padding="max_length")
 
-        # 모델 예측
         with torch.no_grad():
             outputs = model(**inputs)
             logits = outputs.logits
@@ -69,15 +68,13 @@ if st.button("허위정보 탐색하기"):
             probabilities = torch.softmax(logits, dim=1)
             confidence = probabilities[0][prediction].item() * 100
 
-        # 예측 결과 표시
         if prediction == 1:
-            st.error(f"❌ 허위 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
+            st.error(f"허위 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "허위"
         else:
-            st.success(f"✅ 진실된 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
+            st.success(f"진실된 정보 가능성 높음. (신뢰도: {confidence:.2f}%)")
             result_text = "진실"
 
-        # 로그 저장
         log_entry = {
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'user_id': user_id,
@@ -88,7 +85,6 @@ if st.button("허위정보 탐색하기"):
         }
 
         log_file = 'search_log.csv'
-
         if os.path.exists(log_file):
             df_log = pd.read_csv(log_file)
             df_log = pd.concat([df_log, pd.DataFrame([log_entry])], ignore_index=True)
@@ -96,22 +92,17 @@ if st.button("허위정보 탐색하기"):
             df_log = pd.DataFrame([log_entry])
 
         df_log.to_csv(log_file, index=False)
-        st.info("✅ 검색 내용이 기록되었습니다.")
+        st.info("입력 내용이 저장되었습니다.")
 
-        # ✅ 드롭박스 업로드
         try:
             with open("search_log.csv", "rb") as f:
                 dbx.files_upload(f.read(), "/FakeNews/search_log.csv", mode=dropbox.files.WriteMode.overwrite)
-            st.success("✅ 저장 완료!")
+            st.success("드롭박스 저장 완료!")
         except Exception as e:
-            st.error(f"❌ 저장 실패: {e}")
+            st.error(f"드롭박스 저장 실패: {e}")
 
-        # ✅ 검색 카운트 증가
         st.session_state['search_count'] += 1
 
-# ✅ 검색 완료 안내
 if st.session_state['search_count'] == 3:
-    st.success("🎉 3개 입력 완료! 감사합니다.")
-
-
+    st.success("3개 입력 완료! 감사합니다.")
 
